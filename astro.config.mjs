@@ -1,0 +1,18 @@
+// @ts-check
+import { defineConfig } from 'astro/config';
+import vercel from '@astrojs/vercel';
+
+// Alle Seiten werden statisch erzeugt. Nur /api/vermieter-anfrage/ läuft
+// on demand (siehe `export const prerender = false` in der Route).
+export default defineConfig({
+  site: 'https://partner.anyrooms.eu',
+  output: 'static',
+  adapter: vercel(),
+  // URLs wie bisher: Startseite "/", alle weiteren mit Schrägstrich am Ende.
+  trailingSlash: 'always',
+  build: {
+    format: 'directory',
+    inlineStylesheets: 'auto',
+  },
+  compressHTML: true,
+});

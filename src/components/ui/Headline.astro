@@ -1,0 +1,34 @@
+---
+/**
+ * Dreiteilige Headline: start + hervorgehobener Teil (Akzentfarbe) + end.
+ * Beginnt `end` mit einem Satzzeichen, entfällt das Leerzeichen davor.
+ */
+interface Props {
+  as?: 'h1' | 'h2' | 'h3';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  tone?: 'default' | 'invert';
+  align?: 'left' | 'center';
+  text: { start: string; highlight: string; end: string };
+  class?: string;
+}
+const { as: Tag = 'h2', size = 'md', tone = 'default', align = 'left', text, class: className = '' } = Astro.props;
+const endGlued = /^[,.;:!?]/.test(text.end);
+---
+
+<Tag
+  class:list={[
+    'ui-title',
+    `ui-title--${size}`,
+    tone === 'invert' && 'ui-title--invert',
+    align === 'center' && 'ui-title--center',
+    className,
+  ]}
+>
+  {text.start}{' '}<span class="hl">{text.highlight}</span>{text.end ? (endGlued ? text.end : ` ${text.end}`) : ' '}
+</Tag>
+
+<style>
+  .hl {
+    color: var(--accent, #f5a524);
+  }
+</style>

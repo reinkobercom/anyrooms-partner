@@ -1,0 +1,44 @@
+---
+import Base from '../../layouts/Base.astro';
+import SimplePage from '../../components/SimplePage.astro';
+import { meta } from '../../data/content';
+import { landlordForm } from '../../data/forms';
+---
+
+<Base title={meta.thanks.title} description={meta.thanks.description} path="/danke/">
+  <SimplePage>
+    <div class="success">
+      <span class="successMark" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2.5 8.5L6 12L13.5 4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </span>
+      <h1 class="ui-title ui-title--md">{landlordForm.messages.successTitle}</h1>
+      <p class="ui-text ui-text--muted">{landlordForm.messages.successText}</p>
+      <a class="ui-btn ui-btn--quiet back" href="/">Zurück zur Startseite</a>
+    </div>
+  </SimplePage>
+</Base>
+
+<style>
+  .success {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 22px 0 12px;
+  }
+  .successMark {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background-color: #2673c41f;
+    color: var(--color-kit-key2, #2673c4);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .back {
+    margin-top: 8px;
+  }
+</style>

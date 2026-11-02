@@ -1,0 +1,115 @@
+---
+import Badge from '../ui/Badge.astro';
+import Headline from '../ui/Headline.astro';
+import CtaToForm from '../ui/CtaToForm.astro';
+import { whyAnyrooms as c } from '../../data/content';
+---
+
+<section class="root" style="background-color: var(--color-kit-dark); --accent: var(--color-kit-key1);">
+  <div class="glow" aria-hidden="true"></div>
+  <div class="inner">
+    <div class="head">
+      <Badge tone="accent">{c.kicker}</Badge>
+      <Headline as="h2" size="lg" tone="invert" align="center" text={c.headline} />
+      <p class="ui-text ui-text--invertMuted ui-text--center">{c.subline}</p>
+    </div>
+
+    <div class="cards">
+      {
+        c.cards.map((card, index) => (
+          <div data-reveal style={`--reveal-y: 20px; --reveal-duration: 0.4s; --reveal-delay: ${index * 0.08}s;`} data-reveal-amount="0.3">
+            <div class="ui-card ui-card--dark ui-card--p-lg">
+              <div class="cardInner">
+                <span class="rule" aria-hidden="true" />
+                <h3 class="ui-title ui-title--sm ui-title--invert">{card.title}</h3>
+                <p class="ui-text ui-text--sm ui-text--invertMuted">{card.text}</p>
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="cta">
+      <CtaToForm label={c.ctaLabel} />
+      <p class="ui-text ui-text--xs ui-text--invertMuted ui-text--center">{c.ctaNote}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .root {
+    position: relative;
+    overflow: hidden;
+    font-family: var(--font-kit-text-font);
+    padding: clamp(64px, 9vw, 128px) 0;
+  }
+
+  .glow {
+    position: absolute;
+    bottom: -320px;
+    left: -220px;
+    width: 760px;
+    height: 760px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #f5a52426 0%, #f5a52400 66%);
+    pointer-events: none;
+  }
+
+  .inner {
+    position: relative;
+    width: 100%;
+    max-width: 1250px;
+    margin: 0 auto;
+    padding: 0 24px;
+    box-sizing: border-box;
+  }
+
+  .head {
+    max-width: 740px;
+    margin: 0 auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: clamp(40px, 5vw, 66px);
+  }
+
+  .cardInner {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100%;
+  }
+
+  .rule {
+    width: 38px;
+    height: 4px;
+    border-radius: 99px;
+    background-color: var(--accent, #f5a524);
+    margin-bottom: 6px;
+  }
+
+  .cta {
+    margin-top: clamp(36px, 4vw, 52px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  @media (max-width: 900px) {
+    .cards { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 560px) {
+    .inner { padding: 0 18px; }
+  }
+</style>

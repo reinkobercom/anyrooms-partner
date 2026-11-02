@@ -1,0 +1,13 @@
+---
+interface Props {
+  tone?: 'accent' | 'onLight' | 'outline' | 'solid';
+  withDot?: boolean;
+  class?: string;
+}
+const { tone = 'accent', withDot = false, class: className = '' } = Astro.props;
+---
+
+<span class:list={['ui-badge', `ui-badge--${tone}`, className]}>
+  {withDot && <span class="ui-badge__dot" aria-hidden="true" />}
+  <slot />
+</span>

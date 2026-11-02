@@ -1,0 +1,120 @@
+---
+/**
+ * Grundgerüst jeder Seite: Meta-Daten, Schriften (lokal, keine Google-Verbindung),
+ * Favicons, OG-Bild, JSON-LD, Vercel Web Analytics.
+ */
+import '@fontsource/inter/latin-400.css';
+import '@fontsource/inter/latin-600.css';
+import '@fontsource/inter/latin-700.css';
+import '@fontsource/inter-tight/latin-700.css';
+import '../styles/global.css';
+import interTight700 from '@fontsource/inter-tight/files/inter-tight-latin-700-normal.woff2?url';
+import inter400 from '@fontsource/inter/files/inter-latin-400-normal.woff2?url';
+import Analytics from '@vercel/analytics/astro';
+import { site } from '../data/site';
+import { images } from '../data/images';
+import { activeAnnouncements } from '../data/announcements';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Pfad mit Schrägstrich am Ende, z. B. "/" oder "/danke/". */
+  path: string;
+  jsonLd?: Record<string, unknown>;
+}
+const { title, description, path, jsonLd } = Astro.props;
+const canonical = new URL(path, site.url).href;
+const ogImage = new URL(images.og.src, site.url).href;
+const announcements = activeAnnouncements();
+---
+
+<!doctype html>
+<html lang={site.language}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#103a5d" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="de_DE" />
+    <meta property="og:site_name" content="partner.anyrooms.eu" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content={String(images.og.width)} />
+    <meta property="og:image:height" content={String(images.og.height)} />
+    <meta property="og:image:alt" content={images.og.alt} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" href={images.favicon.ico} sizes="32x32" />
+    <link rel="icon" href={images.favicon.svg} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={images.favicon.appleTouch} />
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+
+    <link rel="preload" href={interTight700} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={inter400} as="font" type="font/woff2" crossorigin />
+
+    <script is:inline>document.documentElement.classList.add('js');</script>
+
+    {jsonLd && <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />}
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Zum Inhalt springen</a>
+    {
+      announcements.map((a) => (
+        <div class="announcement" role="status">
+          {a.href ? <a href={a.href}>{a.text}</a> : a.text}
+        </div>
+      ))
+    }
+    <main id="main-content" tabindex="-1">
+      <slot />
+    </main>
+    <slot name="after" />
+
+    <Analytics />
+
+    <script>
+      // Einblend-Animationen beim Scrollen (Ersatz für framer-motion „whileInView“, einmalig).
+      const els = document.querySelectorAll<HTMLElement>('[data-reveal]');
+      if (!('IntersectionObserver' in window)) {
+        els.forEach((el) => el.classList.add('is-visible'));
+      } else {
+        els.forEach((el) => {
+          const amount = Number(el.dataset.revealAmount || '0.3');
+          const io = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add('is-visible');
+                  io.disconnect();
+                }
+              });
+            },
+            { threshold: amount },
+          );
+          io.observe(el);
+        });
+      }
+    </script>
+  </body>
+</html>
+
+<style>
+  .announcement {
+    background: var(--color-kit-key1);
+    color: var(--color-kit-dark);
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    padding: 10px 18px;
+  }
+  .announcement a {
+    color: inherit;
+  }
+</style>

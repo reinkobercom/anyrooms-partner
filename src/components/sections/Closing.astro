@@ -1,0 +1,79 @@
+---
+import Badge from '../ui/Badge.astro';
+import Headline from '../ui/Headline.astro';
+import CtaToForm from '../ui/CtaToForm.astro';
+import ContactButtons from '../ContactButtons.astro';
+import SiteFooter from '../SiteFooter.astro';
+import { closing as c } from '../../data/content';
+---
+
+<section class="root" style="background-color: var(--color-kit-dark); --accent: var(--color-kit-key1);">
+  <div class="glow" aria-hidden="true"></div>
+  <div class="inner">
+    <div class="head" data-reveal style="--reveal-y: 20px; --reveal-duration: 0.45s;" data-reveal-amount="0.3">
+      <Badge tone="accent" withDot>{c.kicker}</Badge>
+      <Headline as="h2" size="lg" tone="invert" align="center" text={c.headline} />
+      <p class="ui-text ui-text--lg ui-text--invert ui-text--center">{c.subline}</p>
+
+      <div class="ctaBox">
+        <CtaToForm label={c.ctaLabel} />
+        <p class="ui-text ui-text--xs ui-text--invertMuted ui-text--center">{c.ctaNote}</p>
+      </div>
+    </div>
+
+    <ContactButtons title={c.contactTitle} />
+    <SiteFooter />
+  </div>
+</section>
+
+<style>
+  .root {
+    position: relative;
+    overflow: hidden;
+    font-family: var(--font-kit-text-font);
+    padding: clamp(70px, 10vw, 136px) 0 40px;
+  }
+
+  .glow {
+    position: absolute;
+    top: -320px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 900px;
+    height: 760px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #f5a52433 0%, #f5a52400 64%);
+    pointer-events: none;
+  }
+
+  .inner {
+    position: relative;
+    width: 100%;
+    max-width: 1250px;
+    margin: 0 auto;
+    padding: 0 24px;
+    box-sizing: border-box;
+  }
+
+  .head {
+    max-width: 760px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+  }
+
+  .ctaBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-top: 6px;
+  }
+
+  @media (max-width: 560px) {
+    .inner { padding: 0 18px; }
+  }
+</style>

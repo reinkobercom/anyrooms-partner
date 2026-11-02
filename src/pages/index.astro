@@ -1,0 +1,69 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/sections/Hero.astro';
+import HowItWorks from '../components/sections/HowItWorks.astro';
+import WhyAnyrooms from '../components/sections/WhyAnyrooms.astro';
+import Faq from '../components/sections/Faq.astro';
+import Closing from '../components/sections/Closing.astro';
+import Trustindex from '../components/Trustindex.astro';
+import { sections } from '../data/sections';
+import { meta, faq } from '../data/content';
+import { site } from '../data/site';
+
+const s = sections.home;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': `${site.url}/#organization`,
+      name: site.company,
+      brand: { '@type': 'Brand', name: 'anyrooms' },
+      url: site.mainSite,
+      logo: `${site.url}/apple-touch-icon.png`,
+      telephone: site.phone,
+      contactPoint: {
+        '@type': 'ContactPoint',
+        telephone: site.phone,
+        contactType: 'customer service',
+        areaServed: 'DE',
+        availableLanguage: ['de'],
+      },
+    },
+    {
+      '@type': 'WebPage',
+      '@id': `${site.url}/#webpage`,
+      url: `${site.url}/`,
+      name: meta.home.title,
+      description: meta.home.description,
+      inLanguage: 'de-DE',
+      publisher: { '@id': `${site.url}/#organization` },
+    },
+    ...(s.faq
+      ? [
+          {
+            '@type': 'FAQPage',
+            '@id': `${site.url}/#faq`,
+            mainEntity: faq.items.map((item) => ({
+              '@type': 'Question',
+              name: item.question,
+              acceptedAnswer: { '@type': 'Answer', text: item.answer },
+            })),
+          },
+        ]
+      : []),
+  ],
+};
+---
+
+<Base title={meta.home.title} description={meta.home.description} path="/" jsonLd={jsonLd}>
+  {s.hero && <Hero />}
+  <Trustindex position="afterHero" />
+  {s.howItWorks && <HowItWorks />}
+  {s.whyAnyrooms && <WhyAnyrooms />}
+  <Trustindex position="afterWhyAnyrooms" />
+  {s.faq && <Faq />}
+  <Trustindex position="beforeClosing" />
+  {s.closing && <Closing />}
+</Base>

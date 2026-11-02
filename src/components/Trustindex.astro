@@ -1,0 +1,59 @@
+---
+/**
+ * Trustindex-Bewertungs-Widget(s) einer Position.
+ * Gesteuert über src/data/trustindex.ts – derzeit alle ausgeschaltet.
+ * Das Loader-Script wird erst geladen, wenn das Widget in Sichtweite kommt.
+ */
+import { widgetsAt, type TrustindexPosition } from '../data/trustindex';
+
+interface Props {
+  position: TrustindexPosition;
+}
+const widgets = widgetsAt(Astro.props.position);
+---
+
+{
+  widgets.length > 0 && (
+    <div class="ti-wrap">
+      {widgets.map((w) => (
+        <div class="ti-slot" data-trustindex={w.widgetId} style={`min-height:${w.minHeight}px`} />
+      ))}
+    </div>
+  )
+}
+
+<script>
+  // Läuft nur, wenn mindestens ein Widget aktiv ist (sonst gibt es keine Slots).
+  const slots = document.querySelectorAll<HTMLElement>('[data-trustindex]');
+  const load = (slot: HTMLElement) => {
+    if (slot.dataset.loaded) return;
+    slot.dataset.loaded = '1';
+    const s = document.createElement('script');
+    s.src = `https://cdn.trustindex.io/loader.js?${slot.dataset.trustindex}`;
+    s.defer = true;
+    s.async = true;
+    slot.appendChild(s);
+  };
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach((e) => {
+        if (e.isIntersecting) {
+          load(e.target as HTMLElement);
+          io.unobserve(e.target);
+        }
+      }),
+      { rootMargin: '300px 0px' },
+    );
+    slots.forEach((slot) => io.observe(slot));
+  } else {
+    slots.forEach(load);
+  }
+</script>
+
+<style>
+  .ti-wrap {
+    max-width: 1250px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+</style>

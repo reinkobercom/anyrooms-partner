@@ -1,0 +1,449 @@
+---
+import Logo from '../ui/Logo.astro';
+import Icon from '../ui/Icon.astro';
+import Badge from '../ui/Badge.astro';
+import Headline from '../ui/Headline.astro';
+import CheckItem from '../ui/CheckItem.astro';
+import { site } from '../../data/site';
+import { hero } from '../../data/content';
+import { landlordForm as f } from '../../data/forms';
+import { images } from '../../data/images';
+
+const TOTAL_STEPS = 5;
+const config = {
+  endpoint: f.endpoint,
+  thankYouPath: f.thankYouPath,
+  autoAdvance: f.autoAdvance,
+  total: TOTAL_STEPS,
+  messages: f.messages,
+  phoneDisplay: site.phoneDisplay,
+  phoneHref: site.phoneHref,
+  step4Options: f.step4.options,
+};
+---
+
+<section id="top" class="root" style="background-color: var(--color-kit-dark); --accent: var(--color-kit-key1);" aria-labelledby="hero-title">
+  <div class="lines" aria-hidden="true"></div>
+  <div class="glow" aria-hidden="true"></div>
+
+  <div class="inner">
+    <header class="brandBar">
+      <div class="brand">
+        <Logo tone="onDark" width={168} title={images.logo.alt} />
+        <span class="brandTag">{site.brandTagline}</span>
+      </div>
+      <a class="ui-btn ui-btn--ghost ui-btn--sm" href={site.headerContact.href}>
+        {site.headerContact.icon !== 'none' && <Icon name={site.headerContact.icon} size={16} />}
+        <span>{site.headerContact.label}</span>
+      </a>
+    </header>
+
+    <div class="layout">
+      <div class="ui-enter" style="--enter-y: 22px;">
+        <Badge tone="accent" withDot>{hero.badge}</Badge>
+
+        <div class="headline">
+          <Headline as="h1" size="xl" tone="invert" text={hero.headline} />
+        </div>
+
+        <p class="ui-text ui-text--lg ui-text--invert">{hero.subline}</p>
+
+        <ul class="bullets">
+          {hero.bullets.map((bullet) => <CheckItem as="li">{bullet}</CheckItem>)}
+        </ul>
+      </div>
+
+      <div class="ui-enter" style="--enter-y: 26px; --enter-delay: 0.12s;">
+        <div class="ui-card ui-card--light ui-card--p-lg">
+          <form id="vermieter-form" class="lf" novalidate action={f.endpoint} method="post" aria-labelledby="form-title">
+            <div class="formHead">
+              <h2 id="form-title" class="ui-title ui-title--md">{f.title}</h2>
+              <p class="ui-text ui-text--sm ui-text--muted">{f.subtitle}</p>
+            </div>
+
+            <div class="progress">
+              <div class="progressBar" aria-hidden="true">
+                {Array.from({ length: TOTAL_STEPS }).map((_, i) => <span class:list={['pCell', i === 0 && 'pCellOn']} data-cell={i} />)}
+              </div>
+              <span class="pLabel" aria-live="polite">
+                {f.progressLabel} <span data-step-current>1</span> {f.progressOfLabel} {TOTAL_STEPS}
+              </span>
+            </div>
+
+            <div class="stepBody">
+              <!-- Schritt 1: Objektart -->
+              <fieldset class="step" data-step="0" aria-labelledby="step-title-0">
+                <h3 id="step-title-0" class="ui-title ui-title--sm" tabindex="-1" data-step-title>{f.step1.question}</h3>
+                <div class="options">
+                  {
+                    f.step1.options.map((label) => (
+                      <button type="button" class="ui-btn ui-btn--option" aria-pressed="false" data-field="objektart" data-value={label} data-advance>
+                        <span class="ui-btn__marker" aria-hidden="true" />
+                        <span>{label}</span>
+                      </button>
+                    ))
+                  }
+                </div>
+                <input type="hidden" name="objektart" value="" />
+                <span class="err ui-error" data-error-for="objektart" role="alert"></span>
+              </fieldset>
+
+              <!-- Schritt 2: Standort -->
+              <fieldset class="step" data-step="1" hidden aria-labelledby="step-title-1">
+                <h3 id="step-title-1" class="ui-title ui-title--sm" tabindex="-1" data-step-title>{f.step2.question}</h3>
+                <div class="fieldWrap">
+                  <div class="ui-field">
+                    <label class="ui-field__label" for="vm-standort">{f.step2.label}</label>
+                    <input id="vm-standort" class="ui-field__control" type="text" name="standort" placeholder={f.step2.placeholder} autocomplete="address-level2" aria-describedby="vm-standort-error" />
+                    <span id="vm-standort-error" class="ui-error" data-error-for="standort" role="alert"></span>
+                  </div>
+                </div>
+              </fieldset>
+
+              <!-- Schritt 3: Kapazität -->
+              <fieldset class="step" data-step="2" hidden aria-labelledby="step-title-2">
+                <h3 id="step-title-2" class="ui-title ui-title--sm" tabindex="-1" data-step-title>{f.step3.question}</h3>
+                <div class="options">
+                  {
+                    f.step3.options.map((label) => (
+                      <button type="button" class="ui-btn ui-btn--option" aria-pressed="false" data-field="kapazitaet" data-value={label} data-advance>
+                        <span class="ui-btn__marker" aria-hidden="true" />
+                        <span>{label}</span>
+                      </button>
+                    ))
+                  }
+                </div>
+                <input type="hidden" name="kapazitaet" value="" />
+                <span class="err ui-error" data-error-for="kapazitaet" role="alert"></span>
+              </fieldset>
+
+              <!-- Schritt 4: Weitere Objekte -->
+              <fieldset class="step" data-step="3" hidden aria-labelledby="step-title-3">
+                <h3 id="step-title-3" class="ui-title ui-title--sm" tabindex="-1" data-step-title>{f.step4.question}</h3>
+                <div class="options">
+                  {
+                    f.step4.options.map((option) => (
+                      <button type="button" class="ui-btn ui-btn--option" aria-pressed="false" data-field="weitereObjekte" data-value={option.label}>
+                        <span class="ui-btn__marker" aria-hidden="true" />
+                        <span>{option.label}</span>
+                      </button>
+                    ))
+                  }
+                </div>
+                <input type="hidden" name="weitereObjekte" value="" />
+                <span class="err ui-error" data-error-for="weitereObjekte" role="alert"></span>
+                <div class="fieldWrap" data-detail hidden>
+                  <div class="ui-field">
+                    <label class="ui-field__label" for="vm-details">{f.step4.detailLabel}</label>
+                    <textarea id="vm-details" class="ui-field__control" name="weitereDetails" placeholder={f.step4.detailPlaceholder}></textarea>
+                  </div>
+                </div>
+              </fieldset>
+
+              <!-- Schritt 5: Kontakt -->
+              <fieldset class="step" data-step="4" hidden aria-labelledby="step-title-4">
+                <h3 id="step-title-4" class="ui-title ui-title--sm" tabindex="-1" data-step-title>{f.step5.question}</h3>
+                <div class="contactGrid">
+                  <div class="ui-field">
+                    <label class="ui-field__label" for="vm-name">{f.step5.nameLabel}</label>
+                    <input id="vm-name" class="ui-field__control" type="text" name="name" autocomplete="name" required aria-describedby="vm-name-error" />
+                    <span id="vm-name-error" class="ui-error" data-error-for="name" role="alert"></span>
+                  </div>
+                  <div class="ui-field">
+                    <label class="ui-field__label" for="vm-firma">{f.step5.companyLabel}</label>
+                    <input id="vm-firma" class="ui-field__control" type="text" name="firma" autocomplete="organization" />
+                  </div>
+                  <div class="ui-field">
+                    <label class="ui-field__label" for="vm-telefon">{f.step5.phoneLabel}</label>
+                    <input id="vm-telefon" class="ui-field__control" type="tel" inputmode="tel" name="telefon" autocomplete="tel" required aria-describedby="vm-telefon-error" />
+                    <span id="vm-telefon-error" class="ui-error" data-error-for="telefon" role="alert"></span>
+                  </div>
+                  <div class="ui-field">
+                    <label class="ui-field__label" for="vm-email">{f.step5.emailLabel}</label>
+                    <input id="vm-email" class="ui-field__control" type="email" inputmode="email" name="email" autocomplete="email" required aria-describedby="vm-email-error" />
+                    <span id="vm-email-error" class="ui-error" data-error-for="email" role="alert"></span>
+                  </div>
+                  <div class="spanTwo ui-field">
+                    <label class="ui-consent" for="vm-consent">
+                      <input id="vm-consent" class="ui-consent__box" type="checkbox" name="einwilligung" value="ja" aria-describedby="vm-consent-error" />
+                      <span class="ui-consent__text">{f.step5.consentLabel}</span>
+                    </label>
+                    <span id="vm-consent-error" class="ui-error" data-error-for="einwilligung" role="alert"></span>
+                  </div>
+                </div>
+
+                <!-- Spamschutz: für Menschen unsichtbar, bitte leer lassen -->
+                <div class="hp" aria-hidden="true">
+                  <label for="vm-website">Website</label>
+                  <input id="vm-website" type="text" name="website" tabindex="-1" autocomplete="off" />
+                </div>
+                <input type="hidden" name="quelle" value="" />
+
+                <span class="err ui-error" data-send-error role="alert"></span>
+              </fieldset>
+            </div>
+
+            <div class="nav">
+              <button type="button" class="ui-btn ui-btn--quiet" data-back hidden>{f.backLabel}</button>
+              <div class="navGrow">
+                <button type="submit" class="ui-btn ui-btn--primary ui-btn--lg ui-btn--full" data-next>{f.nextLabel}</button>
+                <button type="submit" class="ui-btn ui-btn--primary ui-btn--lg ui-btn--full" data-submit hidden>{f.submitLabel}</button>
+              </div>
+            </div>
+
+            <noscript>
+              <p class="ui-text ui-text--sm noscript">
+                Für das Formular wird JavaScript benötigt. Rufen Sie uns gern direkt an:
+                <a href={site.phoneHref}>{site.phoneDisplay}</a>
+              </p>
+            </noscript>
+
+            <div class="foot">
+              <p class="ui-text ui-text--xs ui-text--muted">{f.reassurance}</p>
+              <p class="ui-text ui-text--xs ui-text--muted">{f.privacyNote}</p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script is:inline type="application/json" id="vermieter-form-config" set:html={JSON.stringify(config)} />
+
+<script>
+  import { initLandlordForm } from '../../scripts/landlord-form';
+  initLandlordForm();
+</script>
+
+<style>
+  .root {
+    position: relative;
+    overflow: hidden;
+    font-family: var(--font-kit-text-font);
+    padding: 20px 0 clamp(56px, 8vw, 104px);
+    scroll-margin-top: 0;
+  }
+
+  .glow {
+    position: absolute;
+    top: -280px;
+    right: -190px;
+    width: 720px;
+    height: 720px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #f5a5242e 0%, #f5a52400 66%);
+    pointer-events: none;
+  }
+
+  .lines {
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(#ffffff0f 1px, transparent 1px);
+    background-size: 100% 58px;
+    pointer-events: none;
+  }
+
+  .inner {
+    position: relative;
+    width: 100%;
+    max-width: 1250px;
+    margin: 0 auto;
+    padding: 0 24px;
+    box-sizing: border-box;
+  }
+
+  .brandBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 6px 0 clamp(34px, 5vw, 62px);
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .brandTag {
+    font-family: var(--font-kit-text-font);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #ffffffa3;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 1.02fr 0.98fr;
+    gap: clamp(30px, 4vw, 62px);
+    align-items: start;
+  }
+
+  .headline {
+    margin: 22px 0 18px;
+  }
+
+  .bullets {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin: 30px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .lf {
+    margin: 0;
+  }
+
+  .step {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+  }
+
+  .step[data-anim='in'] {
+    animation: step-in 0.22s ease-out both;
+  }
+  .step[data-anim='out'] {
+    animation: step-out 0.22s ease-out both;
+  }
+  @keyframes step-in {
+    from { opacity: 0; transform: translateX(18px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes step-out {
+    from { opacity: 1; transform: none; }
+    to { opacity: 0; transform: translateX(-18px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .step[data-anim='in'],
+    .step[data-anim='out'] { animation: none; }
+  }
+
+  [data-step-title]:focus {
+    outline: none;
+  }
+
+  .formHead {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 18px;
+  }
+
+  .progress {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+
+  .progressBar {
+    display: flex;
+    gap: 5px;
+    flex: 1;
+  }
+
+  .pCell {
+    height: 5px;
+    flex: 1;
+    border-radius: 99px;
+    background-color: #103a5d1f;
+  }
+
+  .pCellOn {
+    background-color: var(--accent, #f5a524);
+  }
+
+  .pLabel {
+    font-family: var(--font-kit-text-font);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: #103a5da3;
+    white-space: nowrap;
+  }
+
+  .stepBody {
+    min-height: 272px;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .fieldWrap {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .contactGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 13px;
+    margin-top: 16px;
+  }
+
+  .spanTwo {
+    grid-column: 1 / -1;
+  }
+
+  .nav {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .navGrow {
+    flex: 1;
+  }
+
+  .err {
+    margin-top: 12px;
+  }
+  .err :global(a) {
+    color: inherit;
+  }
+
+  .hp {
+    position: absolute;
+    left: -10000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .foot {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .noscript {
+    margin-top: 14px;
+  }
+
+  @media (max-width: 980px) {
+    .layout { grid-template-columns: 1fr; gap: 34px; }
+  }
+
+  @media (max-width: 560px) {
+    .inner { padding: 0 18px; }
+    .contactGrid { grid-template-columns: 1fr; }
+    .stepBody { min-height: 0; }
+    .brandTag { display: none; }
+  }
+</style>

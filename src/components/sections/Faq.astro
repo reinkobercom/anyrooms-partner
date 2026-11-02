@@ -1,0 +1,113 @@
+---
+import Badge from '../ui/Badge.astro';
+import Headline from '../ui/Headline.astro';
+import CtaToForm from '../ui/CtaToForm.astro';
+import { faq as c } from '../../data/content';
+---
+
+<section class="root" style="background-color: var(--color-kit-white); --accent: var(--color-kit-key1);">
+  <div class="inner">
+    <div class="layout">
+      <div class="side">
+        <Badge tone="onLight">{c.kicker}</Badge>
+        <Headline as="h2" size="lg" text={c.headline} />
+        <p class="ui-text ui-text--muted">{c.intro}</p>
+        <div class="ctaBox">
+          <CtaToForm label={c.ctaLabel} />
+          <p class="ui-text ui-text--xs ui-text--muted">{c.ctaNote}</p>
+        </div>
+      </div>
+
+      <div class="list" data-accordion>
+        {
+          c.items.map((item, index) => (
+            <div class:list={['ui-acc', index === 0 && 'ui-acc--open']}>
+              <button type="button" class="ui-acc__head" id={`faq-${index}-head`} aria-expanded={index === 0 ? 'true' : 'false'} aria-controls={`faq-${index}-panel`}>
+                <span>{item.question}</span>
+                <span class="ui-acc__sign" aria-hidden="true">
+                  <svg width="13" height="13" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6 1V11M1 6H11" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                  </svg>
+                </span>
+              </button>
+              <div class="ui-acc__panel" id={`faq-${index}-panel`} role="region" aria-labelledby={`faq-${index}-head`} hidden={index !== 0}>
+                <div class="ui-acc__body">{item.answer}</div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Akkordeon: immer höchstens eine Frage offen, erneuter Klick schließt sie (wie bisher).
+  document.querySelectorAll<HTMLElement>('[data-accordion]').forEach((list) => {
+    const items = Array.from(list.querySelectorAll<HTMLElement>('.ui-acc'));
+    items.forEach((item) => {
+      const head = item.querySelector<HTMLButtonElement>('.ui-acc__head')!;
+      head.addEventListener('click', () => {
+        const willOpen = !item.classList.contains('ui-acc--open');
+        items.forEach((other) => {
+          const open = other === item && willOpen;
+          other.classList.toggle('ui-acc--open', open);
+          other.querySelector('.ui-acc__head')!.setAttribute('aria-expanded', String(open));
+          (other.querySelector('.ui-acc__panel') as HTMLElement).hidden = !open;
+        });
+      });
+    });
+  });
+</script>
+
+<style>
+  .root {
+    position: relative;
+    font-family: var(--font-kit-text-font);
+    padding: clamp(64px, 9vw, 128px) 0;
+  }
+
+  .inner {
+    width: 100%;
+    max-width: 1250px;
+    margin: 0 auto;
+    padding: 0 24px;
+    box-sizing: border-box;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: clamp(36px, 6vw, 92px);
+    align-items: start;
+  }
+
+  .side {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    position: sticky;
+    top: 40px;
+  }
+
+  .ctaBox {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .list {
+    border-top: 1px solid #103a5d1f;
+  }
+
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; gap: 34px; }
+    .side { position: static; }
+  }
+
+  @media (max-width: 560px) {
+    .inner { padding: 0 18px; }
+  }
+</style>

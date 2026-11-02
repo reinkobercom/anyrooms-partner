@@ -1,0 +1,12 @@
+---
+/**
+ * Button „Unterkunft eintragen“, der wie bisher nach oben zum Formular scrollt.
+ * Reiner Anker (kein JavaScript nötig); sanftes Scrollen über CSS.
+ */
+interface Props {
+  label: string;
+}
+const { label } = Astro.props;
+---
+
+<a class="ui-btn ui-btn--primary ui-btn--lg" href="#top" data-focus-form>{label}</a>

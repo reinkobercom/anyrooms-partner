@@ -1,0 +1,16 @@
+---
+interface Props {
+  tone?: 'onDark' | 'onLight';
+  as?: 'div' | 'li';
+}
+const { tone = 'onDark', as: Tag = 'div' } = Astro.props;
+---
+
+<Tag class:list={['ui-check', tone === 'onLight' && 'ui-check--onLight']}>
+  <span class="ui-check__mark" aria-hidden="true">
+    <svg class="ui-check__icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M2.5 8.5L6 12L13.5 4" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+  </span>
+  <span class="ui-check__label"><slot /></span>
+</Tag>

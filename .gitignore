@@ -1,0 +1,16 @@
+# Build
+dist/
+.vercel/
+.astro/
+
+# Abhängigkeiten
+node_modules/
+
+# Umgebungsvariablen (RESEND_API_KEY nur in Vercel hinterlegen!)
+.env
+.env.*
+!.env.example
+
+# System
+.DS_Store
+npm-debug.log*

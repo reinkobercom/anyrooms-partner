@@ -1,0 +1,24 @@
+---
+import Base from '../layouts/Base.astro';
+import SimplePage from '../components/SimplePage.astro';
+import { meta } from '../data/content';
+---
+
+<Base title={meta.notFound.title} description={meta.notFound.description} path="/404/">
+  <SimplePage>
+    <div class="nf">
+      <h1 class="ui-title ui-title--md">Diese Seite gibt es nicht.</h1>
+      <p class="ui-text ui-text--muted">Vielleicht hat sich die Adresse geändert. Auf der Startseite können Sie Ihre Unterkunft in etwa einer Minute eintragen.</p>
+      <a class="ui-btn ui-btn--primary" href="/">Zur Startseite</a>
+    </div>
+  </SimplePage>
+</Base>
+
+<style>
+  .nf {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+</style>
