@@ -12,7 +12,8 @@ export default defineConfig({
   trailingSlash: 'always',
   build: {
     format: 'directory',
-    inlineStylesheets: 'auto',
+    // CSS ist klein (~5 KB gzip) → direkt ins HTML, keine render-blockierende Anfrage.
+    inlineStylesheets: 'always',
   },
   compressHTML: true,
 });
