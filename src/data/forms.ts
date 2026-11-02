@@ -15,7 +15,7 @@ export const mail = {
    * z. B. "Ganze Wohnung in 44137 Dortmund". Fehlt beides: Formularname.
    */
   subject:
-    'Neue Anfrage | Anyrooms Partner - reinkober.com - Unternehmensberatung für Wachstum, Vertrieb & Recruiting  | {thema}',
+    'Neue Anfrage | Anyrooms Partner - reinkober.com | {thema}',
 };
 
 /** Rate-Limit: höchstens so viele Anfragen pro IP im Zeitfenster. */
